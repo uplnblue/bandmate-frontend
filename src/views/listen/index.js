@@ -3,7 +3,9 @@ import Config from '../../config.js';
 import './index.css';
 import { NavLink } from 'react-router-dom';
 import SearchForm from '../../components/searchForm';
-import LoginSpotify from '../../components/loginSpotify'
+import SearchTable from '../../components/searchTable';
+import LoginSpotify from '../../components/loginSpotify';
+
 
 class Listen extends Component {
   constructor() {
@@ -12,21 +14,22 @@ class Listen extends Component {
     this.state = {
       'access_token' : '',
       'token_type' : '',
-      'expires' : '',
+      'expires': '',
+      'time_granted': '',
+      'time_expires' : '',
       'error' : '',
       'state' : '',
     }
   }
 
   componentDidMount() {
-    // TODO: set state "token" object to the access_token in the url query string, if it exists
     let location_hash = window.location.hash;
 
-    /*
+    /* EXAMPLE OF URL user is redirected to
       http://localhost:3000/listen#access_token=BQDTe_f-uhjG6pFMqP4_90QOOugR5upJjMMPCT5u_ZJpEmdZ6WlBeJHgBdlNm1n65_HGmI7Oe-sjfE-b0ViN5Y7y5sKP0pxwKQQtn_fctH5W5M_WYk40lvh7jHNt-jHe7KB_boS9_yO_S5t6lIBBL0lmrWoTYHs&token_type=Bearer&expires_in=3600
      */
 
-    // parse the url to get the access token
+    // get response values from window.location.hash
 
     if (location_hash) {
       console.log('there is a hash');
@@ -41,6 +44,8 @@ class Listen extends Component {
         console.log(pkey+' '+ pvalue);
         if (pkey === 'access_token') {
           this.setState({ 'access_token' : pvalue });
+          // it expires an hour from now (3600000ms)
+          this.setState({ 'time_expires' : Date.now() + 3600000 })
         }
         if (pkey === 'error') {
           this.setState({ 'error' : pvalue });
@@ -73,7 +78,8 @@ class Listen extends Component {
     // authorise with spotify using implicit grant auth flow
     // this supposendly can b`e down entirely throw javascript
     // and you pass info around in the url...
-    const URL = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirectURL}&scope=user-read-private&response_type=token`;
+    // Required scopes: ["streaming", "user-read-email", "user-read-private"]
+    const URL = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirectURL}&scope=user-read-private,streaming,user-read-email&response_type=token`;
 
     console.log(URL);
     // make the call
@@ -117,16 +123,19 @@ class Listen extends Component {
 
 
   render() {
-    // TODO: set up a conditional render that depends on the location
-    // maybe can use switch ... maybe just use if statement
     return (
       <div className="Listen">
       {
-        window.location.hash ?
-        (<SearchForm searchSpotify={this.searchSpotify}/>) :
-        (<LoginSpotify getImplicitGrantToken={this.getImplicitGrantToken}/>)
-      }
+        (this.state.access_token && (Date.now() < this.state.time_expires)) ?
+          (
+              <div>
+                <SearchForm searchSpotify={this.searchSpotify}/>
+                <SearchTable />
+              </div>
 
+            ) :
+          (<LoginSpotify getImplicitGrantToken={this.getImplicitGrantToken}/>)
+      }
       </div>
     );
   }

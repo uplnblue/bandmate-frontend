@@ -4,7 +4,7 @@ import './index.css';
 class SearchTable extends React.Component {
   render() {
     return (
-      <table className="eventsTable table table-light">
+      <table className="SearchTable table table-light">
         { this.props && this.props.tracks &&
           <thead>
             <tr>
