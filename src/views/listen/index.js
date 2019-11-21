@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import SearchForm from '../../components/searchForm';
 import SearchTable from '../../components/searchTable';
 import LoginSpotify from '../../components/loginSpotify';
+import SpotifyPlayer from '../../components/spotifyPlayer';
 
 
 class Listen extends Component {
@@ -177,6 +178,7 @@ class Listen extends Component {
     alert(spotify_uri);
     // TODO: the play function will play that track in the player
     this.setState({spotify_uri});
+
   }
 
 
@@ -199,6 +201,7 @@ class Listen extends Component {
         {
           (this.state.access_token && (Date.now() < this.state.time_expires) && (this.state.spotify_uri)) &&
                 <div>
+                  <SpotifyPlayer />
                 </div>
         }
 
