@@ -19,6 +19,12 @@ class Listen extends Component {
       'time_expires' : '',
       'error' : '',
       'state' : '',
+      'cur_tracks': '',
+      'tracks_paging': {
+        'next_tracks': '',
+        'prev_tracks' : '',
+        'total_tracks' : ''
+      }
     }
   }
 
@@ -45,7 +51,7 @@ class Listen extends Component {
         if (pkey === 'access_token') {
           this.setState({ 'access_token' : pvalue });
           // it expires an hour from now (3600000ms)
-          this.setState({ 'time_expires' : Date.now() + 3600000 })
+          this.setState({ 'time_expires' : Date.now() + 3550000 })
         }
         if (pkey === 'error') {
           this.setState({ 'error' : pvalue });
@@ -84,12 +90,12 @@ class Listen extends Component {
     console.log(URL);
     // make the call
     window.location = URL;
-    // this will redirect to a URL that includes an access token_type
+    // this will redirect to a URL that includes an access token
   }
 
   searchSpotify = async(e) => {
     e.preventDefault();
-    // let artist = e.target.elements.year.value;
+    // let artist = e.target.elements.artist.value;
     // let album = e.target.elements.album.value;
     let track = e.target.elements.song.value;
 
@@ -97,8 +103,8 @@ class Listen extends Component {
     track = track.split(' ');
     track = track.join('+');
     console.log(track);
-    // URL is Spotify search endpoint https://api.spotify/v1/search/
 
+    // URL is Spotify search endpoint https://api.spotify/v1/search/
     const URL = `https://api.spotify.com/v1/search?q=${track}&type=track`;
     console.log(URL);
 
@@ -115,11 +121,61 @@ class Listen extends Component {
     .then(res => res.json())
     .then(result => {
       console.log(result);
+      if (result.tracks) {
+          console.log('about to setState with tracks')
+          // store data about the tracks in state
+          this.setState({'cur_tracks' : result.tracks});
+          let temp_paging = {
+            'next' : result.tracks.next,
+            'previous' : result.tracks.previous,
+            'total' : result.tracks.total
+          }
+          this.setState({'tracks_paging' : temp_paging})
+      }
     })
     .catch(err => console.log(err))
-
     }
-}
+  }
+
+  pageTracks = async(e) => {
+    e.preventDefault();
+    const URL = e.target.getAttribute('id');
+
+    if (this.state.access_token) {
+      console.log(this.state.access_token);
+
+      fetch(URL, {
+      'method': 'GET',
+      'headers': {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer' + ' ' + this.state.access_token,
+      }
+    })
+    .then(res => res.json())
+    .then(result => {
+      console.log(result);
+      if (result.tracks) {
+          console.log('about to setState with tracks')
+          // store data about the tracks in state
+          this.setState({'cur_tracks' : result.tracks});
+          let temp_paging = {
+            'next' : result.tracks.next,
+            'previous' : result.tracks.previous,
+            'total' : result.tracks.total
+          }
+          this.setState({'tracks_paging' : temp_paging})
+      }
+    })
+    .catch(err => console.log(err))
+    }
+  }
+
+  play = async(e) => {
+    e.preventDefault();
+    let spotify_uri = e.target.getAttribute('id');
+    console.log(spotify_uri);
+    // TODO: the play function will play that track in the player
+  }
 
 
   render() {
@@ -130,7 +186,9 @@ class Listen extends Component {
           (
               <div>
                 <SearchForm searchSpotify={this.searchSpotify}/>
-                <SearchTable />
+                <SearchTable tracks={this.state.cur_tracks.items} previous={this.state.tracks_paging.previous} next={this.state.tracks_paging.next}
+                pageTracks={this.pageTracks}
+                play={this.play}/>
               </div>
 
             ) :
