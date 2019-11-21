@@ -4,7 +4,8 @@ import './index.css';
 class SpotifyPlayer extends React.Component {
 
   componentDidMount() {
-
+    // load Spotify Web Player SDK scripts and define the required callback.
+    // loadCallback loads Bandmate JS  (which has required callback) and the Spotify JS with appropriate timing
     let loadCallback = () => {
       if (!document.getElementById('callback')) {
         let callbackJS = document.createElement('script');
