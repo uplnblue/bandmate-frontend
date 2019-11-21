@@ -25,7 +25,6 @@ class SpotifyPlayer extends React.Component {
       spotifyJS.src = 'https://sdk.scdn.co/spotify-player.js';
       spotifyJS.id = 'spotifyJS'
       spotifyJS.type = 'text/javascript';
-      spotifyJS.defer = true;
       if (!document.getElementById('spotifyJS')) {
         document.body.appendChild(spotifyJS);
         spotifyJS.onload = () => {

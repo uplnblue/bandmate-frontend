@@ -1,5 +1,5 @@
 window.onSpotifyWebPlaybackSDKReady = () => {
-  const access_token = 'BQBjHn9F4xfKjBXiwtaL1OovUNxLEtFyLCg0nWpBXXG53s_ObnpD06pxSWMn1J_vRUFA7HXpzfaDTTiE-fOnB6Y6opc8sYO1SVWvCj8unZOWRVB1zs8VMp-rHJLPL04iwm32J_Me0Ud03GYOyQki_fCpoqp0dqo9vm4';
+  const access_token = 'BQDYYP8wHX_htNJheJskSB0Akz6fUzx0QRUFf-IIj4_mNwttkPG5wjQ55aIqfRTChii7be7oCtNHnPtc0rim3p1sZNU9Nmv9jB40QRDU3_W-VZBBlwGmr6rhwWpatli4PrJkUcGG58Hfif2psY-Q5sl7LXqJos4cRGA';
   const player = new Spotify.Player({
     name: 'BandMate Player',
     getOAuthToken: cb => { cb(access_token); }
@@ -41,5 +41,5 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     });
   }
   document.getElementById('getstate').onclick = getState;
-  console.log("this ran");
+  console.log("callback ran");
 }; // end onSpotifyWebPlaybackSDKReady
