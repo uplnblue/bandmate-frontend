@@ -1,5 +1,5 @@
 window.onSpotifyWebPlaybackSDKReady = () => {
-  const access_token = 'BQCtgqCd0vIQiSJoje87R4sscEIMbfTn1pZlsB0wuL8JpDsJKyhaDAuw1FOcpi6fEcwRcIYBuRGKWrLqGcjxD-T8uQdQMRdD9GjFjvAAp2XH_LwBv_6wXrF5qj4n7Ak7UKoSyE9-A4jwFWPf5rqBKAbG1ZN7nT3JBXo';
+  const access_token = 'BQBjHn9F4xfKjBXiwtaL1OovUNxLEtFyLCg0nWpBXXG53s_ObnpD06pxSWMn1J_vRUFA7HXpzfaDTTiE-fOnB6Y6opc8sYO1SVWvCj8unZOWRVB1zs8VMp-rHJLPL04iwm32J_Me0Ud03GYOyQki_fCpoqp0dqo9vm4';
   const player = new Spotify.Player({
     name: 'BandMate Player',
     getOAuthToken: cb => { cb(access_token); }

@@ -201,7 +201,7 @@ class Listen extends Component {
         {
           (this.state.access_token && (Date.now() < this.state.time_expires) && (this.state.spotify_uri)) &&
                 <div>
-                  <SpotifyPlayer />
+                  <SpotifyPlayer spotify_uri={this.state.spotify_uri}/>
                 </div>
         }
 
