@@ -24,7 +24,8 @@ class Listen extends Component {
         'next_tracks': '',
         'prev_tracks' : '',
         'total_tracks' : ''
-      }
+      },
+      'spotify_uri' : ''
     }
   }
 
@@ -173,8 +174,9 @@ class Listen extends Component {
   play = async(e) => {
     e.preventDefault();
     let spotify_uri = e.target.getAttribute('id');
-    console.log(spotify_uri);
+    alert(spotify_uri);
     // TODO: the play function will play that track in the player
+    this.setState({spotify_uri});
   }
 
 
@@ -182,18 +184,24 @@ class Listen extends Component {
     return (
       <div className="Listen">
       {
-        (this.state.access_token && (Date.now() < this.state.time_expires)) ?
-          (
+        (!this.state.access_token || (Date.now() >= this.state.time_expires)) &&
+        <LoginSpotify getImplicitGrantToken={this.getImplicitGrantToken}/>
+      }
+      {
+        (this.state.access_token && (Date.now() < this.state.time_expires) && (!this.state.spotify_uri)) &&
               <div>
                 <SearchForm searchSpotify={this.searchSpotify}/>
                 <SearchTable tracks={this.state.cur_tracks.items} previous={this.state.tracks_paging.previous} next={this.state.tracks_paging.next}
                 pageTracks={this.pageTracks}
                 play={this.play}/>
               </div>
+        }
+        {
+          (this.state.access_token && (Date.now() < this.state.time_expires) && (this.state.spotify_uri)) &&
+                <div>
+                </div>
+        }
 
-            ) :
-          (<LoginSpotify getImplicitGrantToken={this.getImplicitGrantToken}/>)
-      }
       </div>
     );
   }
