@@ -42,6 +42,7 @@ class SpotifyPlayer extends React.Component {
       sdk.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
       });
+      sdk.connect();
     })();
 
 
