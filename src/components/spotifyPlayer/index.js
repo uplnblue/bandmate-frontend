@@ -4,22 +4,6 @@ import './index.css';
 class SpotifyPlayer extends React.Component {
 
   componentDidMount() {
-    // load Spotify Web Player SDK scripts and define the required callback.
-    // loadCallback loads Bandmate JS  (which has required callback) and the Spotify JS with appropriate timing
-    let loadCallback = () => {
-      if (!document.getElementById('callback')) {
-        let callbackJS = document.createElement('script');
-        callbackJS.defer = true;
-        callbackJS.id = 'callbackJS';
-        callbackJS.src = './callback.js';
-        callbackJS.type = 'text/javascript';
-        document.body.appendChild(callbackJS);
-        callbackJS.onload = () => {
-          loadSpotify()
-          console.log("it's alright now, in fact it's an ideal gas");
-        }
-      }
-    } // end loadCallback
 
     let loadSpotify = () => {
       let spotifyJS = document.createElement('script');
@@ -34,8 +18,32 @@ class SpotifyPlayer extends React.Component {
       }
     } // end loadSpotify
 
-    // load both scripts
-    loadCallback();
+    async function waitForSpotifyWebPlaybackSDKToLoad () {
+      return new Promise(resolve => {
+        if (window.Spotify) {
+          resolve(window.Spotify);
+        } else {
+          window.onSpotifyWebPlaybackSDKReady = () => {
+          resolve(window.Spotify);
+          };
+        }
+      });
+    };
+
+    (async () => {
+      loadSpotify()
+      const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
+      console.log("The Web Playback SDK has loaded.");
+      const sdk = new Player({name: "BandMate Web Playback SDK",
+                              volume: 1.0,
+                              getOAuthToken: callback => { callback(this.props.access_token);
+                              }
+                            });
+      sdk.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+      });
+    })();
+
 
   } // end componentDidMount
 
@@ -44,10 +52,7 @@ class SpotifyPlayer extends React.Component {
     return (
       <div className="SpotifyPlayer row">
         <div className="col-md-6 offset-md-3">
-          <div className="card">
-            <button className="nowplaying" id={this.props.spotify_uri}>Play</button>
-            <button id="getstate">Get State</button>
-          </div>
+
         </div>
       </div>
     );

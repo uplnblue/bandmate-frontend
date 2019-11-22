@@ -120,17 +120,17 @@ class Listen extends Component {
         'Authorization': 'Bearer' + ' ' + this.state.access_token,
       }
     })
-    .then(res => res.json())
-    .then(result => {
-      console.log(result);
-      if (result.tracks) {
+    .then(result => result.json())
+    .then(json_result => {
+      console.log(json_result);
+      if (json_result.tracks) {
           console.log('about to setState with tracks')
           // store data about the tracks in state
-          this.setState({'cur_tracks' : result.tracks});
+          this.setState({'cur_tracks' : json_result.tracks});
           let temp_paging = {
-            'next' : result.tracks.next,
-            'previous' : result.tracks.previous,
-            'total' : result.tracks.total
+            'next' : json_result.tracks.next,
+            'previous' : json_result.tracks.previous,
+            'total' : json_result.tracks.total
           }
           this.setState({'tracks_paging' : temp_paging})
       }
@@ -153,17 +153,17 @@ class Listen extends Component {
         'Authorization': 'Bearer' + ' ' + this.state.access_token,
       }
     })
-    .then(res => res.json())
-    .then(result => {
-      console.log(result);
-      if (result.tracks) {
+    .then(result => result.json())
+    .then(json_result => {
+      console.log(json_result);
+      if (json_result.tracks) {
           console.log('about to setState with tracks')
           // store data about the tracks in state
-          this.setState({'cur_tracks' : result.tracks});
+          this.setState({'cur_tracks' : json_result.tracks});
           let temp_paging = {
-            'next' : result.tracks.next,
-            'previous' : result.tracks.previous,
-            'total' : result.tracks.total
+            'next' : json_result.tracks.next,
+            'previous' : json_result.tracks.previous,
+            'total' : json_result.tracks.total
           }
           this.setState({'tracks_paging' : temp_paging})
       }
@@ -201,7 +201,8 @@ class Listen extends Component {
         {
           (this.state.access_token && (Date.now() < this.state.time_expires) && (this.state.spotify_uri)) &&
                 <div>
-                  <SpotifyPlayer spotify_uri={this.state.spotify_uri}/>
+                  <SpotifyPlayer access_token={this.state.access_token}
+                  spotify_uri={this.state.spotify_uri}/>
                 </div>
         }
 
