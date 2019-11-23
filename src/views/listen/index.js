@@ -44,7 +44,6 @@ class Listen extends Component {
       // remove '#' and separate into query params
       let location_hash_array = window.location.hash.slice(1).split('&')
       for (let i in location_hash_array) {
-
         // split each query param into key value pairs
         let key_value = location_hash_array[i].split('=')
         let pkey = key_value[0];
@@ -61,33 +60,20 @@ class Listen extends Component {
 
       }
     }
-    // let checkError = /^[#]error/;
-    // let checkSuccess = /^[#]access_token=([\S]+)/;
-    //
-    // let location_hash_array = window.location.hash.split('&')
-    // let token = false;
-    // for (let i in location_hash_array) {
-    //   token = location_hash_array[i].match(checkSuccess);
-    //   console.log(location_hash_array[i]);
-    //   console.log(token);
-    // }
-
   }
 
 
-// TODO: is there any difference between how I declared this fxn and how I declared searchSpotify?  is there any difference between "async" and the whole "promise object" thing?
   async getImplicitGrantToken(e) {
     e.preventDefault();
 
     let c = new Config();
     const client_id = encodeURIComponent(c.getClientId());
-    // has to start with http:// apparently... this might actually work for this simply stuff, might not have to set up a whole server
+    // redirect url must inlude protocol, e.g. start with http://
     const redirectURL = encodeURIComponent('http://localhost:3000/listen');
     // authorise with spotify using implicit grant auth flow
-    // this supposendly can b`e down entirely throw javascript
-    // and you pass info around in the url...
-    // Required scopes: ["streaming", "user-read-email", "user-read-private"]
-    const URL = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirectURL}&scope=user-read-private,streaming,user-read-email&response_type=token`;
+    // Required scopes: ["streaming", "user-read-email", "user-read-private"] form searching and loading web player
+    // required scopes for controlling spotify devices: user-modify-playback-state
+    const URL = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirectURL}&scope=user-read-private,streaming,user-read-email,user-modify-playback-state&response_type=token`;
 
     console.log(URL);
     // make the call
