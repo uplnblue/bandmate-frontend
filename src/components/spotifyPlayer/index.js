@@ -49,7 +49,7 @@ class SpotifyPlayer extends React.Component {
           }
         })
       });
-    }
+    };
 
     // function to play the chosen track in the web sdk
     const play = ({ spotify_uri,
@@ -73,6 +73,7 @@ class SpotifyPlayer extends React.Component {
         });
     };
 
+    // main function, add all listeners to UI elements inside of it
     (async () => {
       loadSpotify()
       const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
@@ -91,8 +92,8 @@ class SpotifyPlayer extends React.Component {
       let connected = await sdk.connect()
       if (connected) {
         let spotify_uri = this.props.spotify_uri;
-        let device_id = await waitForDeviceId();
-        console.log(spotify_uri, ' ', device_id);
+        await waitForDeviceId();
+        // play the song!
         play({spotify_uri, sdk})
       }
     })();
@@ -107,8 +108,8 @@ class SpotifyPlayer extends React.Component {
         </div>
       </div>
     );
-  }
-}
+  } // end render
+} // end class
 
 
 

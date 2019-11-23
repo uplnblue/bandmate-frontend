@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Config from '../../config.js';
 import './index.css';
-import { NavLink } from 'react-router-dom';
 import SearchForm from '../../components/searchForm';
 import SearchTable from '../../components/searchTable';
 import LoginSpotify from '../../components/loginSpotify';
@@ -103,7 +102,7 @@ class Listen extends Component {
       'method': 'GET',
       'headers': {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer' + ' ' + this.state.access_token,
+        'Authorization': 'Bearer ' + this.state.access_token,
       }
     })
     .then(result => result.json())
@@ -136,7 +135,7 @@ class Listen extends Component {
       'method': 'GET',
       'headers': {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer' + ' ' + this.state.access_token,
+        'Authorization': 'Bearer ' + this.state.access_token,
       }
     })
     .then(result => result.json())
@@ -161,10 +160,9 @@ class Listen extends Component {
   play = async(e) => {
     e.preventDefault();
     let spotify_uri = e.target.getAttribute('id');
-    alert(spotify_uri);
-    // TODO: the play function will play that track in the player
+    // setState({spotify_uri}) will cause React to load the SpotifyPlayer view
+    // which will loads the Spotify Web Player sdk and play the chosen song
     this.setState({spotify_uri});
-
   }
 
 
