@@ -4,7 +4,6 @@ import SearchTableItem from '../searchTableItem';
 
 class SearchTable extends React.Component {
   render() {
-    console.log(this.props);
     return (
       <table className="SearchTable table table-light">
         {
@@ -22,8 +21,8 @@ class SearchTable extends React.Component {
         }
         <tbody>
           {
-            this.props && this.props.tracks && this.props.tracks.map(track =>
-          <SearchTableItem play={this.props.play} track={track} key={track.uri}/>)
+            this.props && this.props.tracks && this.props.tracks.map((track, index) =>
+          <SearchTableItem play={this.props.play} track={track} key={track.uri} index={index}/>)
           }
         </tbody>
         <tfoot>

@@ -9,7 +9,7 @@ function SearchTableItem(props) {
       <td>{props.track.album.name}</td>
       <td>{props.track.duration_ms / 1000}</td>
       <td>{props.track.popularity}</td>
-      <td><button id={props.track.uri} onClick={props.play}>Play</button></td>
+      <td><button id={props.track.uri} data-index={props.index} onClick={props.play}>Play</button></td>
     </tr>
   );
 }

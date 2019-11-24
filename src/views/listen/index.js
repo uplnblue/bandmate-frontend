@@ -25,9 +25,9 @@ class Listen extends Component {
         'prev_tracks' : '',
         'total_tracks' : ''
       },
-      'spotify_uri' : ''
+      'track' : ''
     }
-  }
+  } // end constructor
 
   componentDidMount() {
     let location_hash = window.location.hash;
@@ -39,7 +39,6 @@ class Listen extends Component {
     // get response values from window.location.hash
 
     if (location_hash) {
-      console.log('there is a hash');
       // remove '#' and separate into query params
       let location_hash_array = window.location.hash.slice(1).split('&')
       for (let i in location_hash_array) {
@@ -47,7 +46,6 @@ class Listen extends Component {
         let key_value = location_hash_array[i].split('=')
         let pkey = key_value[0];
         let pvalue = key_value[1];
-        console.log(pkey+' '+ pvalue);
         if (pkey === 'access_token') {
           this.setState({ 'access_token' : pvalue });
           // it expires an hour from now (3600000ms)
@@ -74,7 +72,6 @@ class Listen extends Component {
     // required scopes for controlling spotify devices: user-modify-playback-state
     const URL = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirectURL}&scope=user-read-private,streaming,user-read-email,user-modify-playback-state&response_type=token`;
 
-    console.log(URL);
     // make the call
     window.location = URL;
     // this will redirect to a URL that includes an access token
@@ -89,15 +86,11 @@ class Listen extends Component {
     // replaces spaces with +
     track = track.split(' ');
     track = track.join('+');
-    console.log(track);
 
     // URL is Spotify search endpoint https://api.spotify/v1/search/
     const URL = `https://api.spotify.com/v1/search?q=${track}&type=track`;
-    console.log(URL);
 
     if (this.state.access_token) {
-      console.log(this.state.access_token);
-
       fetch(URL, {
       'method': 'GET',
       'headers': {
@@ -155,15 +148,17 @@ class Listen extends Component {
     })
     .catch(err => console.log(err))
     }
-  }
+  }; // end pageTracks
 
   play = async(e) => {
     e.preventDefault();
-    let spotify_uri = e.target.getAttribute('id');
-    // setState({spotify_uri}) will cause React to load the SpotifyPlayer view
-    // which will loads the Spotify Web Player sdk and play the chosen song
-    this.setState({spotify_uri});
-  }
+    let index = parseInt(e.target.getAttribute('data-index'));
+    let track = this.state.cur_tracks.items[index];
+    console.log(track);
+    // setState({track}) will cause React to load the SpotifyPlayer view
+    // which will load the Spotify Web Player sdk and play the chosen song
+    this.setState({track})
+  }; // end play
 
 
   render() {
@@ -174,19 +169,27 @@ class Listen extends Component {
         <LoginSpotify getImplicitGrantToken={this.getImplicitGrantToken}/>
       }
       {
-        (this.state.access_token && (Date.now() < this.state.time_expires) && (!this.state.spotify_uri)) &&
-              <div>
-                <SearchForm searchSpotify={this.searchSpotify}/>
-                <SearchTable tracks={this.state.cur_tracks.items} previous={this.state.tracks_paging.previous} next={this.state.tracks_paging.next}
-                pageTracks={this.pageTracks}
-                play={this.play}/>
-              </div>
+        (this.state.access_token && (Date.now() < this.state.time_expires) && (!this.state.track)) &&
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6 offset-md-3">
+              <SearchForm searchSpotify={this.searchSpotify}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <SearchTable tracks={this.state.cur_tracks.items} previous={this.state.tracks_paging.previous} next={this.state.tracks_paging.next}
+              pageTracks={this.pageTracks}
+              play={this.play}/>
+            </div>
+          </div>
+        </div>
         }
         {
-          (this.state.access_token && (Date.now() < this.state.time_expires) && (this.state.spotify_uri)) &&
+          (this.state.access_token && (Date.now() < this.state.time_expires) && (this.state.track)) &&
                 <div>
                   <SpotifyPlayer access_token={this.state.access_token}
-                  spotify_uri={this.state.spotify_uri}/>
+                  track={this.state.track}/>
                 </div>
         }
 

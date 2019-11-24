@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.css';
+import BandmatePlayer from '../bandmatePlayer'
 
 class SpotifyPlayer extends React.Component {
 
@@ -9,6 +10,12 @@ class SpotifyPlayer extends React.Component {
     this.state = {
       device_id : null
     }
+  }
+
+  componentWillUnmount() {
+    // disconnect the Spotify Web Player if the user navigates away
+    let discon_player = document.getElementById('discon-player');
+    discon_player.click()
   }
 
   componentDidMount() {
@@ -59,7 +66,7 @@ class SpotifyPlayer extends React.Component {
                                       id
                                     }
                           }
-    }) => {
+                      }) => {
       getOAuthToken(access_token => {
         fetch(`https://api.spotify.com/v1/me/player/play?device_id=${this.state.device_id}`,
               { method: 'PUT',
@@ -91,21 +98,53 @@ class SpotifyPlayer extends React.Component {
 
       let connected = await sdk.connect()
       if (connected) {
-        let spotify_uri = this.props.spotify_uri;
+        let spotify_uri = this.props.track.uri;
         await waitForDeviceId();
         // play the song!
         play({spotify_uri, sdk})
       }
+
+      let togglePlay = async(e) => {
+        e.preventDefault();
+        sdk.getCurrentState().then(player_state => {
+          if (player_state) {
+            sdk.togglePlay().catch(err => console.log(err));
+          }
+        })
+        .catch(err => console.log(err));
+      };
+      // add togglePlay onclick so user can play/pause track
+      let play_pause = document.getElementById('play-pause');
+      play_pause.onclick = togglePlay;
+
+      let discon_player = document.getElementById('discon-player');
+      discon_player.onclick = (e) => { sdk.disconnect() };
     })();
+
   } // end componentDidMount
 
   render() {
 
     return (
-      <div className="SpotifyPlayer row">
-        <div className="col-md-6 offset-md-3">
-
+      <div className="SpotifyPlayer">
+        <div className="row">
+          <div className="col-md-6 offset-md-3">
+            {/* Component: player and segment creation controls */}
+            <BandmatePlayer track={this.props.track} />
+          </div>
         </div>
+
+
+          {/* Component: table displays existing segments */}
+          {/* segment #, start, end, seek btn, notes, save */}
+          {/* save causes a Form component to appear */}
+
+          {/* Component: form */}
+          {/* "Add instrumemt" btn */}
+          {/* table with selectable inputs:
+            category-->list of instruments
+            notes (user can be more specific...)
+            */}
       </div>
     );
   } // end render

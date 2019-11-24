@@ -1,0 +1,8 @@
+.BandmatePlayer #play-pause {
+  width: 100%;
+}
+
+
+.BandmatePlayer #discon-player {
+  display:none;
+}
