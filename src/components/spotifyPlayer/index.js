@@ -19,7 +19,23 @@ class SpotifyPlayer extends React.Component {
   }
 
   componentDidMount() {
+    // get spotify_uri from state, to play the song
+    // get the track_id from the spotify_uri to request the audio analysis
+    // spotify:track:1hIQPCM3oWXrpnXmgTDaKG
+    let spotify_uri = this.props.track.uri;
+    let track_id = spotify_uri.split(':')[2]
+    // temporarily this is always False
+    // TODO: make UI to choose precision
+    let bySection = false;
 
+    // REQUEST AUDIO ANALYSIS from BandMate backend (--> Spotify)
+    const URL = `http://localhost:80/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
+    fetch(URL, { method: 'GET' })
+    .then(res => res.json()) // the .json method handles the promise
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+
+    // LOAD SPOTIFY PLAYER
     let loadSpotify = () => {
       let spotifyJS = document.createElement('script');
       spotifyJS.src = 'https://sdk.scdn.co/spotify-player.js';
@@ -96,9 +112,9 @@ class SpotifyPlayer extends React.Component {
         this.setState({device_id});
       });
 
-      let connected = await sdk.connect()
+      let connected = await sdk.connect();
+
       if (connected) {
-        let spotify_uri = this.props.track.uri;
         await waitForDeviceId();
         // play the song!
         play({spotify_uri, sdk})
@@ -106,7 +122,8 @@ class SpotifyPlayer extends React.Component {
 
       let togglePlay = async(e) => {
         e.preventDefault();
-        sdk.getCurrentState().then(player_state => {
+        sdk.getCurrentState()
+        .then(player_state => {
           if (player_state) {
             sdk.togglePlay().catch(err => console.log(err));
           }
