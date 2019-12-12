@@ -19,21 +19,7 @@ class SpotifyPlayer extends React.Component {
   }
 
   componentDidMount() {
-    // get spotify_uri from state, to play the song
-    // get the track_id from the spotify_uri to request the audio analysis
-    // spotify:track:1hIQPCM3oWXrpnXmgTDaKG
-    let spotify_uri = this.props.track.uri;
-    let track_id = spotify_uri.split(':')[2]
-    // temporarily this is always False
-    // TODO: make UI to choose precision
-    let bySection = false;
 
-    // REQUEST AUDIO ANALYSIS from BandMate backend (--> Spotify)
-    const URL = `http://localhost:80/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
-    fetch(URL, { method: 'GET' })
-    .then(res => res.json()) // the .json method handles the promise
-    .then(data => console.log(data))
-    .catch(err => console.log(err))
 
     // LOAD SPOTIFY PLAYER
     let loadSpotify = () => {
@@ -98,6 +84,41 @@ class SpotifyPlayer extends React.Component {
 
     // main function, add all listeners to UI elements inside of it
     (async () => {
+      // get spotify_uri from state, to play the song
+      let spotify_uri = this.props.track.uri;
+      // get the track_id from the spotify_uri to request the audio analysis
+      // spotify:track:1hIQPCM3oWXrpnXmgTDaKG
+      let track_id = spotify_uri.split(':')[2]
+      // temporarily this is always False
+      // TODO: make UI to choose precision
+      let bySection = false;
+
+      let theta_array = [];
+      let start_array = [];
+
+      // REQUEST AUDIO ANALYSIS from BandMate backend (--> Spotify)
+      const URL = `http://localhost:80/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
+      fetch(URL, { method: 'GET' })
+      .then(res => res.json()) // the .json method handles the promise
+      .then(res_json => {
+        theta_array = Array.from(res_json.data.thetas);
+        start_array = Array.from(res_json.data.start_times);
+      })
+      .catch(err => console.log(err))
+      // takes position in song in microseconds and returns
+      // the theta that should be displayed for that time in the song
+      // start_array unit is seconds so convert to ms
+
+      let theta_start = 0;
+      let getCurrentTheta = (position) => {
+        for (let ind=0; ind < start_array.length; ind++) {
+          if (parseInt(position) <= (parseInt(start_array[ind]*1000))) {
+            theta_start = `${theta_array[ind-1]} : ${start_array[ind-1]*1000}`;
+            return theta_start;
+          }
+        }
+      }
+      // ...
       loadSpotify()
       const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
       console.log("The Web Playback SDK has loaded.");
@@ -136,8 +157,37 @@ class SpotifyPlayer extends React.Component {
 
       let discon_player = document.getElementById('discon-player');
       discon_player.onclick = (e) => { sdk.disconnect() };
-    })();
 
+      // controls polling for current position of song to sync with visualisation of timbre vectors
+      let ani_running = false;
+      let ani_interval = '';
+      // make the on-click function to start and stop the polling
+      let toggleAnimation = () => {
+        if (!ani_running) {
+          ani_running = true;
+          let text_pos = document.getElementById('text-pos');
+          let text_theta_start = document.getElementById('text-theta-start');
+          ani_interval = setInterval(async () => {
+              let playback_state = sdk.getCurrentState()
+                .then(response => { if (response) {
+                  text_pos.value = response.position;
+                  text_theta_start.value = getCurrentTheta(parseInt(response.position));
+                } else {
+                  text_pos.value = 'nothing playing';
+                  text_theta_start.value = 'nothing playing';
+                }
+              });
+            },
+                  100);
+        } else {
+          clearInterval(ani_interval);
+          ani_running = false;
+        }
+      };
+      // add the onclick function to the button
+      let tog_ani = document.getElementById('toggle-ani');
+      tog_ani.onclick = toggleAnimation;
+    })();
   } // end componentDidMount
 
   render() {

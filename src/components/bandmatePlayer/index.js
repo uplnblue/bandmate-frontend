@@ -25,6 +25,16 @@ class BandmatePlayer extends React.Component {
                 <button type="button" id="start-end_segment" className="segment_ctl btn mr-2"  onClick={this.props.startEndSegment}>Seg: st/end</button>
                 <button type="button" id="div_segment" className="segment_ctl btn mr-2" onClick={this.props.divSegment}>Seg: st+end</button>
               </div>
+              <div className="row">
+                <div className="col-md-3">
+                  <button type="button" id="toggle-ani" onClick={this.props.toggleAnimation}>ani</button>
+                </div>
+                <div className="form-group col-md-9">
+                  <input type="text" id="text-pos" placeholder="pos"/>
+                  <input type="text" id="text-theta-start" placeholder="theta start"/>
+                </div>
+              </div>
+
         </div>
       </div>
     );
