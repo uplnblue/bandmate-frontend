@@ -100,9 +100,7 @@ class Listen extends Component {
     })
     .then(result => result.json())
     .then(json_result => {
-      console.log(json_result);
       if (json_result.tracks) {
-          console.log('about to setState with tracks')
           // store data about the tracks in state
           this.setState({'cur_tracks' : json_result.tracks});
           let temp_paging = {
@@ -135,7 +133,6 @@ class Listen extends Component {
     .then(json_result => {
       console.log(json_result);
       if (json_result.tracks) {
-          console.log('about to setState with tracks')
           // store data about the tracks in state
           this.setState({'cur_tracks' : json_result.tracks});
           let temp_paging = {
@@ -154,7 +151,6 @@ class Listen extends Component {
     e.preventDefault();
     let index = parseInt(e.target.getAttribute('data-index'));
     let track = this.state.cur_tracks.items[index];
-    console.log(track);
     // setState({track}) will cause React to load the SpotifyPlayer view
     // which will load the Spotify Web Player sdk and play the chosen song
     this.setState({track})

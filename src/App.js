@@ -11,10 +11,8 @@ function App() {
       <Header />
         <div className="container">
           <Switch>
-              <Route exact path='/' render={()=><h1>BandMate</h1>} />
-              <Route exact path='/about' render={()=><h1>BandMate</h1>} />
+              <Route exact path='/' render={()=><Listen />} />
               <Route exact path='/listen' render={()=><Listen />} />
-              <Route exact path='/analytics' render={() => <h1>Analytics</h1>} />
           </Switch>
         </div>
     </div>

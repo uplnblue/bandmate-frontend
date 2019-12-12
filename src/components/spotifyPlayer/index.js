@@ -20,7 +20,6 @@ class SpotifyPlayer extends React.Component {
 
   componentDidMount() {
 
-
     // LOAD SPOTIFY PLAYER
     let loadSpotify = () => {
       let spotifyJS = document.createElement('script');
@@ -29,9 +28,6 @@ class SpotifyPlayer extends React.Component {
       spotifyJS.type = 'text/javascript';
       if (!document.getElementById('spotifyJS')) {
         document.body.appendChild(spotifyJS);
-        spotifyJS.onload = () => {
-          console.log('Spotify loaded');
-        }
       }
     }; // end loadSpotify
 
@@ -113,15 +109,14 @@ class SpotifyPlayer extends React.Component {
       let getCurrentTheta = (position) => {
         for (let ind=0; ind < start_array.length; ind++) {
           if (parseInt(position) <= (parseInt(start_array[ind]*1000))) {
-            theta_start = `${theta_array[ind-1]} : ${start_array[ind-1]*1000}`;
+            theta_start = `${parseFloat(theta_array[ind-1]).toFixed(2)}:${ind}`;
             return theta_start;
           }
         }
       }
-      // ...
+
       loadSpotify()
       const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
-      console.log("The Web Playback SDK has loaded.");
       const sdk = new Player({name: "BandMate Web Playback SDK",
                               volume: 1.0,
                               getOAuthToken: callback => { callback(this.props.access_token);
@@ -129,7 +124,6 @@ class SpotifyPlayer extends React.Component {
                             });
 
       sdk.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
         this.setState({device_id});
       });
 
@@ -161,17 +155,50 @@ class SpotifyPlayer extends React.Component {
       // controls polling for current position of song to sync with visualisation of timbre vectors
       let ani_running = false;
       let ani_interval = '';
-      // make the on-click function to start and stop the polling
+      //  on-click function to start and stop the polling
       let toggleAnimation = () => {
         if (!ani_running) {
           ani_running = true;
+          let prevInd = 0;
           let text_pos = document.getElementById('text-pos');
           let text_theta_start = document.getElementById('text-theta-start');
+          let ani_theta = document.getElementById('ani-theta')
+          let gs_3 = document.getElementById('gs-3');
+          let gs_4 = document.getElementById('gs-4');
+          // initialise animation color to Spotify brand green
+          gs_3.style.backgroundColor = 'rgb(29, 185, 84)'
+          gs_4.style.backgroundColor = 'rgb(29, 185, 84)'
+          // visualisation definition
           ani_interval = setInterval(async () => {
-              let playback_state = sdk.getCurrentState()
+             sdk.getCurrentState()
                 .then(response => { if (response) {
-                  text_pos.value = response.position;
-                  text_theta_start.value = getCurrentTheta(parseInt(response.position));
+                  text_pos.value = `${response.position} ms`;
+                  let theta = 0;
+                  let currentInd = 0;
+                  let theta_and_ind = getCurrentTheta(parseInt(response.position));
+                  if (theta_and_ind !== undefined) {
+                    theta_and_ind = theta_and_ind.split(':');
+                    theta = theta_and_ind[0];
+                    currentInd = theta_and_ind[1];
+                  }
+
+                  text_theta_start.value = theta + '\xb0';
+                  // rotate to the current theta
+                  ani_theta.style.transform=`rotate(-${theta}deg)`;
+                  // toggle color of ani_theta between Spotify green and black
+                  if (currentInd !== prevInd) {
+                    if (gs_3.style.backgroundColor === 'rgb(29, 185, 84)') {
+                      gs_3.style.backgroundColor = 'rgb(25, 20, 20)'
+                      gs_4.style.backgroundColor = 'rgb(25, 20, 20)'
+                    } else {
+                      gs_3.style.backgroundColor = 'rgb(29, 185, 84)'
+                      gs_4.style.backgroundColor = 'rgb(29, 185, 84)'
+                    }
+                  }
+
+                  prevInd = currentInd;
+
+
                 } else {
                   text_pos.value = 'nothing playing';
                   text_theta_start.value = 'nothing playing';
