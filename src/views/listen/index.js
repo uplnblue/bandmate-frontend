@@ -63,11 +63,10 @@ class Listen extends Component {
 
   async getImplicitGrantToken(e) {
     e.preventDefault();
-
-    let c = new Config();
-    const client_id = encodeURIComponent(c.getClientId());
+    // let c = new Config();
+    const client_id = encodeURIComponent(process.env.REACT_APP_CLIENT_ID);
     // redirect url must inlude protocol, e.g. start with http://
-    const redirectURL = encodeURIComponent('http://localhost:3000/listen');
+    const redirectURL = encodeURIComponent('https://bandmate-frontend-1001.herokuapp.com/listen');
     // authorise with spotify using implicit grant auth flow
     // Required scopes: ["streaming", "user-read-email", "user-read-private"] form searching and loading web player
     // required scopes for controlling spotify devices: user-modify-playback-state

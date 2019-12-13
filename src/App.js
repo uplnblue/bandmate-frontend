@@ -7,7 +7,6 @@ import Listen from './views/listen';
 
 function App() {
   require('dotenv').config();
-  console.log(process.env);
   return (
     <div className="App">
       <Header />
