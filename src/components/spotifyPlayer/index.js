@@ -93,7 +93,7 @@ class SpotifyPlayer extends React.Component {
       let start_array = [];
 
       // REQUEST AUDIO ANALYSIS from BandMate backend (--> Spotify)
-      const URL = `http://localhost:80/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
+      const URL = `https://bandmate-backend-1001.herokuapp.com/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
       fetch(URL, { method: 'GET' })
       .then(res => res.json()) // the .json method handles the promise
       .then(res_json => {
