@@ -64,6 +64,7 @@ class Listen extends Component {
   async getImplicitGrantToken(e) {
     e.preventDefault();
     // let c = new Config();
+    console.log(process.env);
     const client_id = encodeURIComponent(process.env.REACT_APP_CLIENT_ID);
     // redirect url must inlude protocol, e.g. start with http://
     const redirectURL = encodeURIComponent('https://bandmate-frontend-1001.herokuapp.com/listen');
