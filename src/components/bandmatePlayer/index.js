@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.css';
 import GridContainer from '../gridContainer';
+import SpotifyLogo from '../spotifyLogo';
 
 class BandmatePlayer extends React.Component {
 
@@ -43,6 +44,7 @@ class BandmatePlayer extends React.Component {
           </div>
 
           <GridContainer />
+          <SpotifyLogo />
 
         </div>
       </div>

@@ -1,0 +1,11 @@
+.SpotifyLogo {
+  position: relative;
+  min-height: 100px;
+}
+
+.SpotifyLogoPNG {
+  position: relative;
+  top: 25px;
+  bottom: 25px;
+  width: 150px;
+}

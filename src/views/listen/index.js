@@ -5,6 +5,7 @@ import SearchForm from '../../components/searchForm';
 import SearchTable from '../../components/searchTable';
 import LoginSpotify from '../../components/loginSpotify';
 import SpotifyPlayer from '../../components/spotifyPlayer';
+import SpotifyLogo from '../../components/spotifyLogo';
 
 
 class Listen extends Component {
@@ -161,12 +162,18 @@ class Listen extends Component {
     return (
       <div className="Listen">
       {
-        (!this.state.access_token || (Date.now() >= this.state.time_expires)) &&
+        (!this.state.access_token || !this.state.time_expires || (Date.now() >= this.state.time_expires)) &&
         <LoginSpotify getImplicitGrantToken={this.getImplicitGrantToken}/>
       }
       {
         (this.state.access_token && (Date.now() < this.state.time_expires) && (!this.state.track)) &&
         <div className="container">
+          <div className="row">
+            <div className="col-md-6 offset-md-3">
+              <SpotifyLogo />
+              <p>Search uses <a href="https://developer.spotify.com/documentation/web-api/reference/search/search/" target="_blank" rel="noopener noreferrer">Spotify Search API</a></p>
+            </div>
+          </div>
           <div className="row">
             <div className="col-md-6 offset-md-3">
               <SearchForm searchSpotify={this.searchSpotify}/>
