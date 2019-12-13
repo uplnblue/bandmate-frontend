@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Config from '../../config.js';
+// import Config from '../../config.js';
 import './index.css';
 import SearchForm from '../../components/searchForm';
 import SearchTable from '../../components/searchTable';
