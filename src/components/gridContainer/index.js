@@ -11,7 +11,7 @@ class GridContainer extends React.Component {
           <div className="row" id="transp">
           </div>
           <div className="row" id='opaque'>
-            <p>The angle is the angle between the current and previous 12-d timbre vectors as provided by <a rel="noopener noreferrer" target="_blank" href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-analysis/">Spotify's Audio Analsyis API</a></p>
+            <p>The angle is the angle between the current and previous 12-d timbre vectors as provided by <a rel="noopener noreferrer" target="_blank" href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-analysis/">Spotify's Audio Analysis API</a></p>
           </div>
         </div>
 
