@@ -42,8 +42,24 @@ class BandmatePlayer extends React.Component {
               <input type="text" id="text-theta-start" placeholder="theta start"/>
             </div>
           </div>
+          {
+            (this.props.loaded_state === "loading") &&
+              <div>Loading timbre data for {this.props.track.name}</div>
+          }
 
-          <GridContainer />
+          {
+            (this.props.loaded_state === "loaded") &&
+            <React.Fragment>
+              <div>Click ani to toggle timbre visualisation</div>
+              <div>Click "=" to toggle play</div>
+              <GridContainer />
+            </React.Fragment>
+          }
+
+          {
+            (this.props.loaded_state === "error") &&
+              <div>Timbre data did not load; something went wrong</div>
+          }
           <SpotifyLogo />
 
         </div>

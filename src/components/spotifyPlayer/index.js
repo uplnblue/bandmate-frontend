@@ -8,7 +8,8 @@ class SpotifyPlayer extends React.Component {
     super();
 
     this.state = {
-      device_id : null
+      device_id : null,
+      loading_state: "loading"
     }
   }
 
@@ -94,13 +95,24 @@ class SpotifyPlayer extends React.Component {
 
       // REQUEST AUDIO ANALYSIS from BandMate backend (--> Spotify)
       const URL = `https://bandmate-backend-1001.herokuapp.com/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
+
+      this.setState({
+        loaded_state: "loading"
+      });
+
       fetch(URL, { method: 'GET' })
       .then(res => res.json()) // the .json method handles the promise
       .then(res_json => {
         theta_array = Array.from(res_json.data.thetas);
         start_array = Array.from(res_json.data.start_times);
+        this.setState({
+          loaded_state: "loaded"
+        });
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        this.setState({loaded_state: "error"})
+      })
       // takes position in song in microseconds and returns
       // the theta that should be displayed for that time in the song
       // start_array unit is seconds so convert to ms
@@ -214,7 +226,9 @@ class SpotifyPlayer extends React.Component {
       // add the onclick function to the button
       let tog_ani = document.getElementById('toggle-ani');
       tog_ani.onclick = toggleAnimation;
+
     })();
+
   } // end componentDidMount
 
   render() {
@@ -224,7 +238,7 @@ class SpotifyPlayer extends React.Component {
         <div className="row">
           <div className="col-md-6 offset-md-3">
             {/* Component: player and segment creation controls */}
-            <BandmatePlayer track={this.props.track} />
+            <BandmatePlayer track={this.props.track} {...this.state} />
           </div>
         </div>
 
