@@ -94,7 +94,7 @@ class SpotifyPlayer extends React.Component {
       let start_array = [];
 
       // REQUEST AUDIO ANALYSIS from BandMate backend (--> Spotify)
-      const URL = `https://bandmate-backend-1001.herokuapp.com/api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
+      const URL = `${process.env.REACT_APP_BACKEND_URL}api/timbre_analysis?track_id=${track_id}&bySection=${bySection}`
 
       this.setState({
         loaded_state: "loading"

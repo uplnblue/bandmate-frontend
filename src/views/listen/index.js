@@ -66,7 +66,8 @@ class Listen extends Component {
     // let c = new Config();
     const client_id = encodeURIComponent('f9481f85fd6c4313a7eb8594f8e3a691');
     // redirect url must inlude protocol, e.g. start with http://
-    const redirectURL = encodeURIComponent('https://bandmate-frontend-1001.herokuapp.com/listen');
+    const redirectURL = encodeURIComponent(process.env.REACT_APP_REDIRECT_URL)
+    // const redirectURL = encodeURIComponent('https://bandmate-frontend-1001.herokuapp.com/listen');
     // const redirectURL = encodeURIComponent('http://localhost:3000/listen');
     // authorise with spotify using implicit grant auth flow
     // Required scopes: ["streaming", "user-read-email", "user-read-private"] form searching and loading web player
